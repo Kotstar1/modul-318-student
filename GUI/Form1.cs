@@ -98,26 +98,7 @@ namespace GUI
             dgvAnzeige.DataSource = dtt_connections;
             UseWaitCursor = false;
         }
-        /*
-        private void get2Grid()
-        {
-            DataTable dtt_routes = new DataTable();
-            dtt_routes.Columns.Add("Zeit");
-            dtt_routes.Columns.Add("Nach");
-            dtt_routes.Columns.Add("Linie");
-
-            //Definieren der Station für die Abfahrtstafel (Inhalt der Textbox wird übergeben)
-            Station station = transport.GetStations(BTN_von_2.Text).StationList.First();
-            StationBoardRoot departures = transport.GetStationBoard(station.Name, station.Id); //Beispiel für station.name ist Luzern, Beispiel für station.Id = 8505000
-
-            foreach (StationBoard station_b in departures.Entries)
-            {
-                dtt_routes.Rows.Add(Get_Time(station_b.Stop.Departure.ToString()), station_b.To, (station_b.Category + " " + station_b.Number)); //Jede Linie die gefunden wird, wird hier durchgegangen
-            }
-
-            DTG_Verbindungen_2.DataSource = dtt_routes;
-        }
-        */
+       
         private string Get_Date(string date1)
         {
             string date2 = date1.Remove(10);
