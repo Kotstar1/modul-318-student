@@ -8,8 +8,7 @@ namespace SwissTransport
     {
         public Stations GetStations(string query)
         {
-
-            var request = CreateWebRequest("http://transport.opendata.ch/v1/locations?query=" + query);
+            var request = CreateWebRequest("http://transport.opendata.ch/v1/locations?query=" + query);  //URL für Abfrage wird erstellt
             var response = request.GetResponse();
             var responseStream = response.GetResponseStream();
 
@@ -17,17 +16,16 @@ namespace SwissTransport
             {
                 var message = new StreamReader(responseStream).ReadToEnd();
                 var stations = JsonConvert.DeserializeObject<Stations>(message
-                    , new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore }); // Von hier bekommt man die Daten z.B. ID, Name, Koordianten
+                    , new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore }); //Hier bekommt man die Daten wie z.B. ID, Name und Koordinaten
                 return stations;
             }
 
             return null;
         }
 
-        public StationBoardRoot GetStationBoard(string station, string id, string date, string time)
+        public StationBoardRoot GetStationBoard(string station, string id)
         {
-
-            var request = CreateWebRequest("http://transport.opendata.ch/v1/stationboard?station=" + station + "&id=" + id + "&date=" + date + "&time=" + time + "&limit=6");
+            var request = CreateWebRequest("http://transport.opendata.ch/v1/stationboard?Station=" + station + "&id=" + id); //Request wird mit der ID erstellt. z.B. 8505000 für Luzern
             var response = request.GetResponse();
             var responseStream = response.GetResponseStream();
 
@@ -42,10 +40,11 @@ namespace SwissTransport
             return null;
         }
 
-        public Connections GetConnections(string fromStation, string toStation)
-        {
 
-            var request = CreateWebRequest("http://transport.opendata.ch/v1/connections?from=" + fromStation + "&to=" + toStation);
+        //API erweitert, mit Datum und Zeit
+        public Connections GetConnections(string fromStation, string toStattion, string date, string time)
+        {
+            var request = CreateWebRequest("http://transport.opendata.ch/v1/connections?from=" + fromStation + "&to=" + toStattion + "&date=" + date + "&time=" + time + "&limit=6");
             var response = request.GetResponse();
             var responseStream = response.GetResponseStream();
 
@@ -62,8 +61,9 @@ namespace SwissTransport
 
         private static WebRequest CreateWebRequest(string url)
         {
-            var request = WebRequest.Create(url);
-            var webProxy = WebRequest.DefaultWebProxy;
+            var request = WebRequest.Create(url); //URL wird übergeben z.B. http://transport.opendata.ch/v1/locations?query=Luzern
+
+            var webProxy = WebRequest.DefaultWebProxy; //z.B. 	http://transport.opendata.ch/v1/stationboard?Station=Luzern&id=8505000
 
             webProxy.Credentials = CredentialCache.DefaultNetworkCredentials;
             request.Proxy = webProxy;
