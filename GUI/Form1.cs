@@ -19,10 +19,5 @@ namespace GUI
         {
             InitializeComponent();
         }
-
-        private void btnFahrplan_Click(object sender, EventArgs e)
-        {
-
-        }
     }
 }

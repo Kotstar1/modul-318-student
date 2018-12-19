@@ -188,7 +188,6 @@
             this.btnFahrplan.TabIndex = 15;
             this.btnFahrplan.Text = "Fahrplan";
             this.btnFahrplan.UseVisualStyleBackColor = true;
-            this.btnFahrplan.Click += new System.EventHandler(this.btnFahrplan_Click);
             // 
             // Form1
             // 
