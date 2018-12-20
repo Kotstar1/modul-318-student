@@ -28,9 +28,10 @@ namespace GUI
         }
         private void getStations(string text, ListBox listBox)
         {
-            if (text.Length >= 3)
+            if (text.Length >= 2)
             {
                 listBox.Items.Clear();
+
                 Stations stations = transport.GetStations(text);
                 foreach (Station station in stations.StationList)
                 {
@@ -40,6 +41,7 @@ namespace GUI
                 }
             }
         }
+        /*
         public string getTableFromDataGrid()
         {
             StringBuilder strTable = new StringBuilder();
@@ -72,19 +74,18 @@ namespace GUI
             }
             return strTable.ToString();
         }
-
+        */
         private void getGrid()
         {
-            Transport transport = new Transport();
-            Cursor.Current = Cursors.WaitCursor;
             
-            DataTable dtt_connections = new DataTable();
-            dtt_connections.Columns.Add("Datum");
-            dtt_connections.Columns.Add("Von");
-            dtt_connections.Columns.Add("Abfahrt");
-            dtt_connections.Columns.Add("Nach");
-            dtt_connections.Columns.Add("Ankunft");
-            dtt_connections.Columns.Add("Gleis");
+            Cursor.Current = Cursors.WaitCursor;
+            DataTable dtConnections = new DataTable();
+            dtConnections.Columns.Add("Datum");
+            dtConnections.Columns.Add("Von");
+            dtConnections.Columns.Add("Nach");
+            dtConnections.Columns.Add("Abfahrt");
+            dtConnections.Columns.Add("Ankunft");
+            dtConnections.Columns.Add("Gleis");
 
             //Abfrage
             Connections connections = transport.GetConnections(txtVon.Text, txtNach.Text, dtpDatum.Value.ToString("yyyy-MM-dd"), dtpTime.Text);
@@ -92,36 +93,58 @@ namespace GUI
             //Jedes Resulatat zur Liste hinzufügen
             foreach (Connection connection in connections.ConnectionList)
             {
-                dtt_connections.Rows.Add(Get_Date(connection.From.Departure), connection.From.Station.Name, Get_Time(connection.From.Departure), connection.To.Station.Name, Get_Time(connection.To.Arrival), connection.To.Platform);
+                dtConnections.Rows.Add(getDate(connection.From.Departure), connection.From.Station.Name, connection.To.Station.Name, getTime(connection.From.Departure), getTime(connection.To.Arrival), connection.To.Platform);
             }
 
-            dgvAnzeige.DataSource = dtt_connections;
+            dgvAnzeige.DataSource = dtConnections;
             UseWaitCursor = false;
         }
-       
-        private string Get_Date(string date1)
+
+        //Abfhartstafel
+        private void getGridAbfahrtstafel()
+        {
+            DataTable dtt_routes = new DataTable();
+            dtt_routes.Columns.Add("Zeit");
+            dtt_routes.Columns.Add("Nach");
+            dtt_routes.Columns.Add("Linie");
+
+            //Definieren der Station für die Abfahrtstafel (Inhalt der Textbox wird übergeben)
+            Station station = transport.GetStations(txtStation.Text).StationList.First();
+            StationBoardRoot departures = transport.GetStationBoard(station.Name, station.Id); //Beispiel für station.name ist Luzern, Beispiel für station.Id = 8505000
+
+            foreach (StationBoard station_b in departures.Entries)
+            {
+                dtt_routes.Rows.Add(getTime(station_b.Stop.Departure.ToString()), station_b.To, (station_b.Category + " " + station_b.Number)); //Jede Linie die gefunden wird, wird hier durchgegangen
+            }
+
+           dgvAbfahrtstafel.DataSource = dtt_routes;
+        }
+        #region getDate/getTime
+        private string getDate(string date1)
         {
             string date2 = date1.Remove(10);
             DateTime date3 = Convert.ToDateTime(date2);
             return date3.ToString("dd.MM.yyyy");
         }
 
-        private string Get_Time(string time1) //Zeit kommt so 13:25:00 und die letzen 2 Stellen :00 werden hier gelöscht.
+        private string getTime(string time1) //Zeit kommt so 13:25:00 und die letzen 2 Stellen :00 werden hier gelöscht.
         {
             string time2 = time1.Remove(0, 11);
             time2 = time2.Remove(5);
             return time2;
         }
+        #endregion
 
-        
+        /*
         private void Switch_txt(TextBox textBox1, TextBox textBox2)
         {
             string temp = textBox1.Text;
             textBox1.Text = textBox2.Text;
             textBox2.Text = temp;
         }
+        */
 
-        
+        #region Fahrplan Objekte 
 
         private void txtVon_TextChanged(object sender, EventArgs e)
         {
@@ -158,5 +181,103 @@ namespace GUI
                 MessageBox.Show("Bitte geben Sie zwei Orte ein!");
             }
         }
+
+        private void lstVon_KeyDown(object sender, KeyEventArgs e)
+        {
+            if(e.KeyCode == Keys.Enter)
+            {
+                try {
+                    txtVon.Text = lstVon.SelectedItem.ToString();
+                    txtNach.Focus();
+                    lstVon.Visible = false;
+                }
+                catch
+                {
+                    MessageBox.Show("Wählen Sie eine Station aus");
+                }
+                
+            }
+        }
+
+        private void lstNach_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                try
+                {
+                    txtNach.Text = lstNach.SelectedItem.ToString();
+                    dtpDatum.Focus();
+                    lstNach.Visible = false;
+                }
+                catch
+                {
+                    MessageBox.Show("Wählen Sie eine Station aus");
+                }
+
+            }
+        }
+        #endregion
+
+        #region Navigation
+        private void btnNavfahrplan_Click(object sender, EventArgs e)
+        {
+            panel1.Visible = true;
+            panelnav.Visible = true;
+            panel2.Visible = false;
+        }
+
+        private void btnNavAbfahrtstafel_Click(object sender, EventArgs e)
+        {
+            panel1.Visible = false;
+            panel2.Visible = true;
+            panelnav.Visible = true;
+        }
+        #endregion
+
+        #region Abfahrtstafel Objekte
+        private void btnAbfahrtstafel_Click(object sender, EventArgs e)
+        {
+            if (txtStation.Text != string.Empty)
+            {
+                getGridAbfahrtstafel();
+            }
+            else
+            {
+                MessageBox.Show("Bitte geben Sie einen Orte ein!");
+            }
+        }
+
+        private void txtStation_TextChanged(object sender, EventArgs e)
+        {
+            getStations(txtStation.Text, lstStation);
+        }
+
+        private void lstStation_MouseDoubleClick(object sender, MouseEventArgs e)
+        {
+            txtStation.Text = lstStation.SelectedItem.ToString();
+            btnAbfahrtstafel.Focus();
+            lstStation.Visible = false;
+        }
+
+        
+
+        private void lstStation_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                try
+                {
+                    txtStation.Text = lstStation.SelectedItem.ToString();
+                    btnAbfahrtstafel.Focus();
+                    lstStation.Visible = false;
+                }
+                catch
+                {
+                    MessageBox.Show("Wählen Sie eine Station aus");
+                }
+
+            }
+        }
+        #endregion
     }
 }
