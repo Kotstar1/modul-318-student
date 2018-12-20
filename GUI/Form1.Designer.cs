@@ -34,7 +34,6 @@
             this.btnAbfahrtstafel = new System.Windows.Forms.Button();
             this.txtStation = new System.Windows.Forms.TextBox();
             this.label6 = new System.Windows.Forms.Label();
-            this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.label5 = new System.Windows.Forms.Label();
             this.panel1 = new System.Windows.Forms.Panel();
             this.lstNach = new System.Windows.Forms.ListBox();
@@ -58,13 +57,16 @@
             this.btnNavfahrplan = new System.Windows.Forms.Button();
             this.panel3 = new System.Windows.Forms.Panel();
             this.webGoogleMaps = new System.Windows.Forms.WebBrowser();
+            this.pictureBox1 = new System.Windows.Forms.PictureBox();
+            this.pbSwitch = new System.Windows.Forms.PictureBox();
             this.panel2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvAbfahrtstafel)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvAnzeige)).BeginInit();
             this.panelnav.SuspendLayout();
             this.panel3.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pbSwitch)).BeginInit();
             this.SuspendLayout();
             // 
             // panel2
@@ -128,16 +130,6 @@
             this.label6.TabIndex = 2;
             this.label6.Text = "Station";
             // 
-            // pictureBox1
-            // 
-            this.pictureBox1.BackColor = System.Drawing.SystemColors.ButtonFace;
-            this.pictureBox1.Image = global::GUI.Properties.Resources.icons;
-            this.pictureBox1.Location = new System.Drawing.Point(323, 19);
-            this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(195, 66);
-            this.pictureBox1.TabIndex = 1;
-            this.pictureBox1.TabStop = false;
-            // 
             // label5
             // 
             this.label5.AutoSize = true;
@@ -150,6 +142,7 @@
             // 
             // panel1
             // 
+            this.panel1.Controls.Add(this.pbSwitch);
             this.panel1.Controls.Add(this.lstNach);
             this.panel1.Controls.Add(this.lstVon);
             this.panel1.Controls.Add(this.txtNach);
@@ -199,6 +192,7 @@
             this.txtNach.Size = new System.Drawing.Size(143, 20);
             this.txtNach.TabIndex = 6;
             this.txtNach.TextChanged += new System.EventHandler(this.txtNach_TextChanged);
+            this.txtNach.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtNach_KeyDown);
             // 
             // txtVon
             // 
@@ -207,6 +201,7 @@
             this.txtVon.Size = new System.Drawing.Size(143, 20);
             this.txtVon.TabIndex = 4;
             this.txtVon.TextChanged += new System.EventHandler(this.txtVon_TextChanged);
+            this.txtVon.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtVon_KeyDown);
             // 
             // txtEmail
             // 
@@ -234,7 +229,7 @@
             this.dgvAnzeige.Location = new System.Drawing.Point(28, 156);
             this.dgvAnzeige.Name = "dgvAnzeige";
             this.dgvAnzeige.ReadOnly = true;
-            this.dgvAnzeige.Size = new System.Drawing.Size(636, 245);
+            this.dgvAnzeige.Size = new System.Drawing.Size(636, 176);
             this.dgvAnzeige.TabIndex = 46;
             // 
             // btnGooglemaps
@@ -334,6 +329,7 @@
             this.btnNavGooglemaps.TabIndex = 6;
             this.btnNavGooglemaps.Text = "Google Maps";
             this.btnNavGooglemaps.UseVisualStyleBackColor = true;
+            this.btnNavGooglemaps.Click += new System.EventHandler(this.btnNavGooglemaps_Click);
             // 
             // btnNavAbfahrtstafel
             // 
@@ -373,6 +369,26 @@
             this.webGoogleMaps.Size = new System.Drawing.Size(618, 468);
             this.webGoogleMaps.TabIndex = 6;
             // 
+            // pictureBox1
+            // 
+            this.pictureBox1.BackColor = System.Drawing.SystemColors.ButtonFace;
+            this.pictureBox1.Image = global::GUI.Properties.Resources.icons;
+            this.pictureBox1.Location = new System.Drawing.Point(323, 19);
+            this.pictureBox1.Name = "pictureBox1";
+            this.pictureBox1.Size = new System.Drawing.Size(195, 66);
+            this.pictureBox1.TabIndex = 1;
+            this.pictureBox1.TabStop = false;
+            // 
+            // pbSwitch
+            // 
+            this.pbSwitch.Image = global::GUI.Properties.Resources.switch1;
+            this.pbSwitch.Location = new System.Drawing.Point(181, 12);
+            this.pbSwitch.Name = "pbSwitch";
+            this.pbSwitch.Size = new System.Drawing.Size(57, 46);
+            this.pbSwitch.TabIndex = 48;
+            this.pbSwitch.TabStop = false;
+            this.pbSwitch.Click += new System.EventHandler(this.pbSwitch_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -385,15 +401,17 @@
             this.Name = "Form1";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Form1";
+            this.Load += new System.EventHandler(this.Form1_Load);
             this.panel2.ResumeLayout(false);
             this.panel2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvAbfahrtstafel)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvAnzeige)).EndInit();
             this.panelnav.ResumeLayout(false);
             this.panel3.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pbSwitch)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -430,6 +448,7 @@
         private System.Windows.Forms.ListBox lstStation;
         private System.Windows.Forms.Panel panel3;
         private System.Windows.Forms.WebBrowser webGoogleMaps;
+        private System.Windows.Forms.PictureBox pbSwitch;
     }
 }
 

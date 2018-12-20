@@ -63,9 +63,29 @@ namespace GUI.Properties {
         /// <summary>
         ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap _switch {
+            get {
+                object obj = ResourceManager.GetObject("switch", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap icons {
             get {
                 object obj = ResourceManager.GetObject("icons", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap switch1 {
+            get {
+                object obj = ResourceManager.GetObject("switch1", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

@@ -4,11 +4,13 @@ using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using SwissTransport;
 using System.Net.Mail;
+using System.Device.Location;
 
 
 namespace GUI
@@ -23,21 +25,7 @@ namespace GUI
             InitializeComponent();
 
         }
-        private void getStations(string text, ListBox listBox)
-        {
-            if (text.Length >= 2)
-            {
-                listBox.Items.Clear();
 
-                Stations stations = transport.GetStations(text);
-                foreach (Station station in stations.StationList)
-                {
-                    listBox.Items.Add(station.Name);
-                    listBox.Visible = true;
-                    listBox.BringToFront();
-                }
-            }
-        }
         #region Email
         public string getTableFromDataGrid()
         {
@@ -103,6 +91,7 @@ namespace GUI
         }
         #endregion
 
+        #region getGrid Fahrplan
         private void getGrid()
         {
 
@@ -128,6 +117,10 @@ namespace GUI
             UseWaitCursor = false;
         }
 
+
+        #endregion
+
+
         #region GoogleMaps
         private void Create_GmapStation(string x, string y)
         {
@@ -137,7 +130,7 @@ namespace GUI
 
         private void btnGooglemaps_Click(object sender, EventArgs e)
         {
-           
+
 
             if (txtVon.Text != string.Empty)
             {
@@ -155,7 +148,7 @@ namespace GUI
         }
         #endregion
 
-        //Abfhartstafel
+        #region getGrid Abfahrtstafel
         private void getGridAbfahrtstafel()
         {
             DataTable dtt_routes = new DataTable();
@@ -174,7 +167,11 @@ namespace GUI
 
             dgvAbfahrtstafel.DataSource = dtt_routes;
         }
-        #region getDate/getTime
+
+
+        #endregion
+
+        #region getDate/getTime/getStations
         private string getDate(string date1)
         {
             string date2 = date1.Remove(10);
@@ -188,16 +185,40 @@ namespace GUI
             time2 = time2.Remove(5);
             return time2;
         }
+        private void getStations(string text, ListBox listBox)
+        {
+            if (text.Length >= 2)
+            {
+                listBox.Items.Clear();
+
+                Stations stations = transport.GetStations(text);
+                foreach (Station station in stations.StationList)
+                {
+                    listBox.Items.Add(station.Name);
+                    listBox.Visible = true;
+                    listBox.BringToFront();
+                }
+            }
+        }
         #endregion
 
-        /*
+        #region Switch Text
         private void Switch_txt(TextBox textBox1, TextBox textBox2)
         {
             string temp = textBox1.Text;
             textBox1.Text = textBox2.Text;
             textBox2.Text = temp;
         }
-        */
+        private void pbSwitch_Click(object sender, EventArgs e)
+        {
+            Switch_txt(txtVon, txtNach);
+            lstVon.Visible = false;
+            lstNach.Visible = false;
+        }
+
+        #endregion
+
+
 
         #region Fahrplan Objekte 
 
@@ -337,13 +358,85 @@ namespace GUI
             }
         }
 
+
         #endregion
 
+        private void txtVon_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Down)
+            {
+                lstVon.Focus();
+                
+            }
+        }
+
+        private void txtNach_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Down)
+            {
+                lstNach.Focus();
+            }
+        }
+
+        #region Geowatcher
         private void Form1_Load(object sender, EventArgs e)
         {
+            GeoCoordinateWatcher watcher = new GeoCoordinateWatcher();
+            watcher.PositionChanged += watcher_PositionChanged;
+            watcher.Start();
+        }
+
+        private void watcher_PositionChanged(object sender, GeoPositionChangedEventArgs<GeoCoordinate> e)
+        {
+            MessageBox.Show(String.Format("Lat: {0}, Long: {1}", e.Position.Location.Latitude,
+                e.Position.Location.Latitude));
+        }
+
+        private void getGridGeoWatcher()
+        {
+
+            GeoCoordinateWatcher watcher = new GeoCoordinateWatcher();
+            watcher.PositionChanged += watcher_PositionChanged;
+            watcher.Start();/*
+                Stations stations = transport.GetStations(Convert.ToString(watcher));
+                Station station = stations.StationList[0];
+                Create_GmapStation(Convert.ToString(station.Coordinate.XCoordinate).Replace(',', '.'), Convert.ToString(station.Coordinate.YCoordinate).Replace(',', '.'));
+                panel1.Visible = false;
+                panel2.Visible = false;
+                panel3.Visible = true;*/
+            DataTable dtt_routes = new DataTable();
+            dtt_routes.Columns.Add("Zeit");
+            dtt_routes.Columns.Add("Nach");
+            dtt_routes.Columns.Add("Linie");
+
+            //Definieren der Station für die Abfahrtstafel (Inhalt der Textbox wird übergeben)
+            Stations stations = transport.GetStations(Convert.ToString(watcher));
+            Station station = stations.StationList[0];
+            StationBoardRoot departures = transport.GetStationBoard(Convert.ToString(station.Coordinate.XCoordinate), Convert.ToString(station.Coordinate.YCoordinate)); //Beispiel für station.name ist Luzern, Beispiel für station.Id = 8505000
+
+            foreach (StationBoard station_b in departures.Entries)
+            {
+                dtt_routes.Rows.Add(getTime(station_b.Stop.Departure.ToString()), station_b.To, (station_b.Category + " " + station_b.Number)); //Jede Linie die gefunden wird, wird hier durchgegangen
+            }
+
+            dgvAbfahrtstafel.DataSource = dtt_routes;
+
+
+
+
 
         }
 
-        
+
+
+        private void btnNavGooglemaps_Click(object sender, EventArgs e)
+        {
+            getGridGeoWatcher();
+        }
+
+
+        #endregion
+
+
     }
 }
