@@ -29,6 +29,7 @@
         private void InitializeComponent()
         {
             this.panel2 = new System.Windows.Forms.Panel();
+            this.lstStation = new System.Windows.Forms.ListBox();
             this.dgvAbfahrtstafel = new System.Windows.Forms.DataGridView();
             this.btnAbfahrtstafel = new System.Windows.Forms.Button();
             this.txtStation = new System.Windows.Forms.TextBox();
@@ -55,13 +56,15 @@
             this.btnNavGooglemaps = new System.Windows.Forms.Button();
             this.btnNavAbfahrtstafel = new System.Windows.Forms.Button();
             this.btnNavfahrplan = new System.Windows.Forms.Button();
-            this.lstStation = new System.Windows.Forms.ListBox();
+            this.panel3 = new System.Windows.Forms.Panel();
+            this.webGoogleMaps = new System.Windows.Forms.WebBrowser();
             this.panel2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvAbfahrtstafel)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvAnzeige)).BeginInit();
             this.panelnav.SuspendLayout();
+            this.panel3.SuspendLayout();
             this.SuspendLayout();
             // 
             // panel2
@@ -77,6 +80,18 @@
             this.panel2.Name = "panel2";
             this.panel2.Size = new System.Drawing.Size(670, 426);
             this.panel2.TabIndex = 48;
+            this.panel2.Visible = false;
+            // 
+            // lstStation
+            // 
+            this.lstStation.FormattingEnabled = true;
+            this.lstStation.Location = new System.Drawing.Point(40, 133);
+            this.lstStation.Name = "lstStation";
+            this.lstStation.Size = new System.Drawing.Size(178, 95);
+            this.lstStation.TabIndex = 4;
+            this.lstStation.Visible = false;
+            this.lstStation.KeyDown += new System.Windows.Forms.KeyEventHandler(this.lstStation_KeyDown);
+            this.lstStation.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.lstStation_MouseDoubleClick);
             // 
             // dgvAbfahrtstafel
             // 
@@ -150,9 +165,9 @@
             this.panel1.Controls.Add(this.btnVerbindungsuchen);
             this.panel1.Controls.Add(this.label2);
             this.panel1.Controls.Add(this.label1);
-            this.panel1.Location = new System.Drawing.Point(12, 88);
+            this.panel1.Location = new System.Drawing.Point(12, 96);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(687, 452);
+            this.panel1.Size = new System.Drawing.Size(687, 475);
             this.panel1.TabIndex = 6;
             // 
             // lstNach
@@ -208,6 +223,7 @@
             this.btnEmail.TabIndex = 12;
             this.btnEmail.Text = "Fahrplan per Email senden";
             this.btnEmail.UseVisualStyleBackColor = true;
+            this.btnEmail.Click += new System.EventHandler(this.btnEmail_Click);
             // 
             // dgvAnzeige
             // 
@@ -229,6 +245,7 @@
             this.btnGooglemaps.TabIndex = 11;
             this.btnGooglemaps.Text = "Auf Google Maps ansehen ";
             this.btnGooglemaps.UseVisualStyleBackColor = true;
+            this.btnGooglemaps.Click += new System.EventHandler(this.btnGooglemaps_Click);
             // 
             // label4
             // 
@@ -338,24 +355,32 @@
             this.btnNavfahrplan.UseVisualStyleBackColor = true;
             this.btnNavfahrplan.Click += new System.EventHandler(this.btnNavfahrplan_Click);
             // 
-            // lstStation
+            // panel3
             // 
-            this.lstStation.FormattingEnabled = true;
-            this.lstStation.Location = new System.Drawing.Point(40, 133);
-            this.lstStation.Name = "lstStation";
-            this.lstStation.Size = new System.Drawing.Size(178, 95);
-            this.lstStation.TabIndex = 4;
-            this.lstStation.Visible = false;
-            this.lstStation.KeyDown += new System.Windows.Forms.KeyEventHandler(this.lstStation_KeyDown);
-            this.lstStation.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.lstStation_MouseDoubleClick);
+            this.panel3.Controls.Add(this.webGoogleMaps);
+            this.panel3.Location = new System.Drawing.Point(40, 96);
+            this.panel3.Name = "panel3";
+            this.panel3.Size = new System.Drawing.Size(624, 475);
+            this.panel3.TabIndex = 50;
+            this.panel3.Visible = false;
+            // 
+            // webGoogleMaps
+            // 
+            this.webGoogleMaps.Location = new System.Drawing.Point(0, 7);
+            this.webGoogleMaps.MinimumSize = new System.Drawing.Size(20, 20);
+            this.webGoogleMaps.Name = "webGoogleMaps";
+            this.webGoogleMaps.ScriptErrorsSuppressed = true;
+            this.webGoogleMaps.Size = new System.Drawing.Size(618, 468);
+            this.webGoogleMaps.TabIndex = 6;
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1169, 767);
-            this.Controls.Add(this.panelnav);
+            this.ClientSize = new System.Drawing.Size(1427, 790);
             this.Controls.Add(this.panel1);
+            this.Controls.Add(this.panel3);
+            this.Controls.Add(this.panelnav);
             this.Controls.Add(this.panel2);
             this.Name = "Form1";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
@@ -368,6 +393,7 @@
             this.panel1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvAnzeige)).EndInit();
             this.panelnav.ResumeLayout(false);
+            this.panel3.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -402,6 +428,8 @@
         private System.Windows.Forms.Button btnNavAbfahrtstafel;
         private System.Windows.Forms.Button btnNavfahrplan;
         private System.Windows.Forms.ListBox lstStation;
+        private System.Windows.Forms.Panel panel3;
+        private System.Windows.Forms.WebBrowser webGoogleMaps;
     }
 }
 

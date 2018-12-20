@@ -7,11 +7,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using GMap.NET;
-using GMap.NET.MapProviders;
-using GMap.NET.WindowsForms;
 using SwissTransport;
-using GMap.NET.WindowsForms.Markers;
+using System.Net.Mail;
 
 
 namespace GUI
@@ -24,7 +21,7 @@ namespace GUI
         public Form1()
         {
             InitializeComponent();
-            
+
         }
         private void getStations(string text, ListBox listBox)
         {
@@ -41,7 +38,7 @@ namespace GUI
                 }
             }
         }
-        /*
+        #region Email
         public string getTableFromDataGrid()
         {
             StringBuilder strTable = new StringBuilder();
@@ -74,10 +71,41 @@ namespace GUI
             }
             return strTable.ToString();
         }
-        */
+
+        private void btnEmail_Click(object sender, EventArgs e)
+        {
+            if (txtEmail.Text == "")
+                MessageBox.Show("Bitte geben Sie eine Email-Adresse ein!");
+            else
+            {
+                try
+                {
+                    MailMessage mail = new MailMessage();
+                    mail.From = new MailAddress("modul318.henry.walker@gmail.com");
+                    mail.To.Add(new MailAddress(Convert.ToString(this.txtEmail)));
+                    mail.Subject = "Fahrplan";
+                    mail.Body = "Hallo, hier ein Fahrplan, den ich mit dir teilen wollte. ";
+                    mail.Body += "<b>" + getTableFromDataGrid() + "</b>";
+                    mail.IsBodyHtml = true;
+                    SmtpClient SmtpServer = new SmtpClient();
+                    SmtpServer.Host = "smtp.gmail.com";
+                    SmtpServer.Port = 587;
+                    SmtpServer.Credentials = new System.Net.NetworkCredential("modul318.henry.walker@gmail.com", "Kennwort$11");
+                    SmtpServer.EnableSsl = true;
+                    SmtpServer.Send(mail);
+                    MessageBox.Show("Email wurde erfolgreich gesendet");
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Error: " + ex.Message);
+                }
+            }
+        }
+        #endregion
+
         private void getGrid()
         {
-            
+
             Cursor.Current = Cursors.WaitCursor;
             DataTable dtConnections = new DataTable();
             dtConnections.Columns.Add("Datum");
@@ -100,6 +128,33 @@ namespace GUI
             UseWaitCursor = false;
         }
 
+        #region GoogleMaps
+        private void Create_GmapStation(string x, string y)
+        {
+            string url = "https://www.google.ch/maps/place/" + x + "," + y;
+            webGoogleMaps.Navigate(url);
+        }
+
+        private void btnGooglemaps_Click(object sender, EventArgs e)
+        {
+           
+
+            if (txtVon.Text != string.Empty)
+            {
+                Stations stations = transport.GetStations(txtVon.Text);
+                Station station = stations.StationList[0];
+                Create_GmapStation(Convert.ToString(station.Coordinate.XCoordinate).Replace(',', '.'), Convert.ToString(station.Coordinate.YCoordinate).Replace(',', '.'));
+                panel1.Visible = false;
+                panel2.Visible = false;
+                panel3.Visible = true;
+            }
+            else
+            {
+                MessageBox.Show("Bitte geben Sie einen Ort ein!");
+            }
+        }
+        #endregion
+
         //Abfhartstafel
         private void getGridAbfahrtstafel()
         {
@@ -117,7 +172,7 @@ namespace GUI
                 dtt_routes.Rows.Add(getTime(station_b.Stop.Departure.ToString()), station_b.To, (station_b.Category + " " + station_b.Number)); //Jede Linie die gefunden wird, wird hier durchgegangen
             }
 
-           dgvAbfahrtstafel.DataSource = dtt_routes;
+            dgvAbfahrtstafel.DataSource = dtt_routes;
         }
         #region getDate/getTime
         private string getDate(string date1)
@@ -184,9 +239,10 @@ namespace GUI
 
         private void lstVon_KeyDown(object sender, KeyEventArgs e)
         {
-            if(e.KeyCode == Keys.Enter)
+            if (e.KeyCode == Keys.Enter)
             {
-                try {
+                try
+                {
                     txtVon.Text = lstVon.SelectedItem.ToString();
                     txtNach.Focus();
                     lstVon.Visible = false;
@@ -195,7 +251,7 @@ namespace GUI
                 {
                     MessageBox.Show("Wählen Sie eine Station aus");
                 }
-                
+
             }
         }
 
@@ -224,12 +280,14 @@ namespace GUI
             panel1.Visible = true;
             panelnav.Visible = true;
             panel2.Visible = false;
+            panel3.Visible = false;
         }
 
         private void btnNavAbfahrtstafel_Click(object sender, EventArgs e)
         {
             panel1.Visible = false;
             panel2.Visible = true;
+            panel3.Visible = false;
             panelnav.Visible = true;
         }
         #endregion
@@ -259,7 +317,7 @@ namespace GUI
             lstStation.Visible = false;
         }
 
-        
+
 
         private void lstStation_KeyDown(object sender, KeyEventArgs e)
         {
@@ -278,6 +336,14 @@ namespace GUI
 
             }
         }
+
         #endregion
+
+        private void Form1_Load(object sender, EventArgs e)
+        {
+
+        }
+
+        
     }
 }
