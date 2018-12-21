@@ -13,18 +13,21 @@ using System.Net.Mail;
 using System.Device.Location;
 
 
+
+
 namespace GUI
 {
     public partial class Form1 : Form
     {
         Transport transport = new Transport();
-        Coordinate coordinate = new Coordinate();
+
 
         public Form1()
         {
             InitializeComponent();
-
+            
         }
+
 
         #region Email
         public string getTableFromDataGrid()
@@ -32,6 +35,8 @@ namespace GUI
             StringBuilder strTable = new StringBuilder();
             try
             {
+                //Tabelle für die Email wird erstellt
+
                 strTable.Append("<table border='1' cellpadding='0' cellspacing='0'>");
                 strTable.Append("<tr>");
                 foreach (DataGridViewColumn col in dgvAnzeige.Columns)
@@ -63,7 +68,11 @@ namespace GUI
         private void btnEmail_Click(object sender, EventArgs e)
         {
             if (txtEmail.Text == "")
+            {
                 MessageBox.Show("Bitte geben Sie eine Email-Adresse ein!");
+
+            }
+
             else
             {
                 try
@@ -94,27 +103,38 @@ namespace GUI
         #region getGrid Fahrplan
         private void getGrid()
         {
-
-            Cursor.Current = Cursors.WaitCursor;
-            DataTable dtConnections = new DataTable();
-            dtConnections.Columns.Add("Datum");
-            dtConnections.Columns.Add("Von");
-            dtConnections.Columns.Add("Nach");
-            dtConnections.Columns.Add("Abfahrt");
-            dtConnections.Columns.Add("Ankunft");
-            dtConnections.Columns.Add("Gleis");
-
-            //Abfrage
-            Connections connections = transport.GetConnections(txtVon.Text, txtNach.Text, dtpDatum.Value.ToString("yyyy-MM-dd"), dtpTime.Text);
-
-            //Jedes Resulatat zur Liste hinzufügen
-            foreach (Connection connection in connections.ConnectionList)
+            try
             {
-                dtConnections.Rows.Add(getDate(connection.From.Departure), connection.From.Station.Name, connection.To.Station.Name, getTime(connection.From.Departure), getTime(connection.To.Arrival), connection.To.Platform);
+                Cursor.Current = Cursors.WaitCursor;
+                DataTable dtConnections = new DataTable();
+                dtConnections.Columns.Add("Datum");
+                dtConnections.Columns.Add("Von");
+                dtConnections.Columns.Add("Nach");
+                dtConnections.Columns.Add("Abfahrt");
+                dtConnections.Columns.Add("Ankunft");
+                dtConnections.Columns.Add("Gleis");
+
+                //Abfrage
+                Connections connections = transport.GetConnections(txtVon.Text, txtNach.Text, dtpDatum.Value.ToString("yyyy-MM-dd"), dtpTime.Text);
+
+                //Jedes Resulatat zur Liste hinzufügen
+                foreach (Connection connection in connections.ConnectionList)
+                {
+                    dtConnections.Rows.Add(getDate(connection.From.Departure), connection.From.Station.Name, connection.To.Station.Name, getTime(connection.From.Departure), getTime(connection.To.Arrival), connection.To.Platform);
+                }
+
+                dgvAnzeige.DataSource = dtConnections;
+                UseWaitCursor = false;
+            }
+            catch
+            {
+
+                MessageBox.Show("Geben sie einen Gültigen Ort ein");
+
+
             }
 
-            dgvAnzeige.DataSource = dtConnections;
-            UseWaitCursor = false;
+
         }
 
 
@@ -122,28 +142,46 @@ namespace GUI
 
 
         #region GoogleMaps
-        private void Create_GmapStation(string x, string y)
+
+        
+
+        
+        private void GoogleMapsShowStation(string x, string y)
         {
-            string url = "https://www.google.ch/maps/place/" + x + "," + y;
+            string url = "https://www.google.ch/maps/place/" + x + "," + y; //Die Kordinaten  von der Station werden in die Google Map Suchleiste geschrieben
             webGoogleMaps.Navigate(url);
         }
 
+        private void googleMapsStationsNearUrl()
+        {
+           string url = "https://www.google.com/maps/search/transit+stop+near/";
+            webGoogleMaps.Navigate(url);
+        }
+
+        private void googlMapsDefaultMap()
+        {
+            string url = "https://www.google.com/maps/";
+            webGoogleMaps.Navigate(url);
+        }
         private void btnGooglemaps_Click(object sender, EventArgs e)
         {
 
-
             if (txtVon.Text != string.Empty)
             {
+                
+                GUI.SelectedIndex = 2;
+
+                webGoogleMaps.Focus();
                 Stations stations = transport.GetStations(txtVon.Text);
                 Station station = stations.StationList[0];
-                Create_GmapStation(Convert.ToString(station.Coordinate.XCoordinate).Replace(',', '.'), Convert.ToString(station.Coordinate.YCoordinate).Replace(',', '.'));
-                panel1.Visible = false;
-                panel2.Visible = false;
-                panel3.Visible = true;
+                GoogleMapsShowStation(Convert.ToString(station.Coordinate.XCoordinate).Replace(',', '.'), Convert.ToString(station.Coordinate.YCoordinate).Replace(',', '.'));
+
+                webGoogleMaps.Visible = true;
             }
             else
             {
                 MessageBox.Show("Bitte geben Sie einen Ort ein!");
+
             }
         }
         #endregion
@@ -151,21 +189,30 @@ namespace GUI
         #region getGrid Abfahrtstafel
         private void getGridAbfahrtstafel()
         {
-            DataTable dtt_routes = new DataTable();
-            dtt_routes.Columns.Add("Zeit");
-            dtt_routes.Columns.Add("Nach");
-            dtt_routes.Columns.Add("Linie");
-
-            //Definieren der Station für die Abfahrtstafel (Inhalt der Textbox wird übergeben)
-            Station station = transport.GetStations(txtStation.Text).StationList.First();
-            StationBoardRoot departures = transport.GetStationBoard(station.Name, station.Id); //Beispiel für station.name ist Luzern, Beispiel für station.Id = 8505000
-
-            foreach (StationBoard station_b in departures.Entries)
+            try
             {
-                dtt_routes.Rows.Add(getTime(station_b.Stop.Departure.ToString()), station_b.To, (station_b.Category + " " + station_b.Number)); //Jede Linie die gefunden wird, wird hier durchgegangen
+                DataTable routes = new DataTable();
+                routes.Columns.Add("Zeit");
+                routes.Columns.Add("Nach");
+                routes.Columns.Add("Linie");
+
+                //Definieren der Station für die Abfahrtstafel (Inhalt der Textbox wird übergeben)
+                Station station = transport.GetStations(txtStation.Text).StationList.First();
+
+                StationBoardRoot departures = transport.GetStationBoard(station.Name, station.Id); //Beispiel für station.name ist Luzern, Beispiel für station.Id = 8505000
+
+                foreach (StationBoard station_b in departures.Entries)
+                {
+                    routes.Rows.Add(getTime(station_b.Stop.Departure.ToString()), station_b.To, (station_b.Category + " " + station_b.Number)); //Jede Linie die gefunden wird, wird hier durchgegangen
+                }
+
+                dgvAbfahrtstafel.DataSource = routes;
+            }
+            catch
+            {
+                MessageBox.Show("Geben sie einen Gültigen Wert ein!");
             }
 
-            dgvAbfahrtstafel.DataSource = dtt_routes;
         }
 
 
@@ -187,23 +234,35 @@ namespace GUI
         }
         private void getStations(string text, ListBox listBox)
         {
-            if (text.Length >= 2)
+            try
             {
-                listBox.Items.Clear();
-
-                Stations stations = transport.GetStations(text);
-                foreach (Station station in stations.StationList)
+                if (text.Length >= 2)
                 {
-                    listBox.Items.Add(station.Name);
-                    listBox.Visible = true;
-                    listBox.BringToFront();
+                    listBox.Items.Clear();
+
+                    Stations stations = transport.GetStations(text);
+                    foreach (Station station in stations.StationList)
+                    {
+                        listBox.Items.Add(station.Name);
+                        listBox.Visible = true;
+                        listBox.BringToFront();
+                    }
                 }
             }
+            catch
+            {
+                MessageBox.Show("Geben sie einen Gültigen Wert ein!");
+                listBox.Visible = false;
+                txtNach.Clear();
+                txtVon.Clear();
+                txtStation.Clear();
+            }
+
         }
         #endregion
 
         #region Switch Text
-        private void Switch_txt(TextBox textBox1, TextBox textBox2)
+        private void switchtxt(TextBox textBox1, TextBox textBox2) //hier werden die beiden TextBoxen txtVon und txtNach verstauscht, dass man in die andere Richtung auch suchen kann.
         {
             string temp = textBox1.Text;
             textBox1.Text = textBox2.Text;
@@ -211,7 +270,7 @@ namespace GUI
         }
         private void pbSwitch_Click(object sender, EventArgs e)
         {
-            Switch_txt(txtVon, txtNach);
+            switchtxt(txtVon, txtNach);
             lstVon.Visible = false;
             lstNach.Visible = false;
         }
@@ -221,51 +280,51 @@ namespace GUI
 
 
         #region Fahrplan Objekte 
-
+        //TextBox Von
         private void txtVon_TextChanged(object sender, EventArgs e)
         {
             getStations(txtVon.Text, lstVon);
         }
-
+        //TextBox Nach
         private void txtNach_TextChanged(object sender, EventArgs e)
         {
             getStations(txtNach.Text, lstNach);
         }
-
+        //ListBox Von
         private void lstVon_MouseDoubleClick(object sender, MouseEventArgs e)
         {
             txtVon.Text = lstVon.SelectedItem.ToString();
             btnVerbindungsuchen.Focus();
             lstVon.Visible = false;
         }
-
+        //ListBox Nach
         private void lstNach_MouseDoubleClick(object sender, MouseEventArgs e)
         {
             txtNach.Text = lstNach.SelectedItem.ToString();
             btnVerbindungsuchen.Focus();
             lstNach.Visible = false;
         }
-
+        //Button Verbindungen suchen
         private void btnVerbindungsuchen_Click(object sender, EventArgs e)
         {
-            if (txtVon.Text != string.Empty)
+            if (txtVon.Text != string.Empty && txtNach.Text != string.Empty)
             {
-                getGrid();
+                getGrid();                 //Die verbindungen werden von der getGrid Methode geholt
             }
             else
             {
                 MessageBox.Show("Bitte geben Sie zwei Orte ein!");
             }
         }
-
+        //ListBox Von KeyDown
         private void lstVon_KeyDown(object sender, KeyEventArgs e)
         {
-            if (e.KeyCode == Keys.Enter)
+            if (e.KeyCode == Keys.Enter)                            //Wenn man die Taste "Enter" auf der Tastatur drückt wird das Item welches man Selected hat in die TextBox geschrieben
             {
                 try
                 {
                     txtVon.Text = lstVon.SelectedItem.ToString();
-                    txtNach.Focus();
+                    txtNach.Focus();                                //Der Fokus wird auf TextBox txtNach gelegt für eine besser Ergonomie 
                     lstVon.Visible = false;
                 }
                 catch
@@ -275,7 +334,7 @@ namespace GUI
 
             }
         }
-
+        //ListBox Nach KeyDown
         private void lstNach_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Enter)
@@ -295,30 +354,13 @@ namespace GUI
         }
         #endregion
 
-        #region Navigation
-        private void btnNavfahrplan_Click(object sender, EventArgs e)
-        {
-            panel1.Visible = true;
-            panelnav.Visible = true;
-            panel2.Visible = false;
-            panel3.Visible = false;
-        }
-
-        private void btnNavAbfahrtstafel_Click(object sender, EventArgs e)
-        {
-            panel1.Visible = false;
-            panel2.Visible = true;
-            panel3.Visible = false;
-            panelnav.Visible = true;
-        }
-        #endregion
-
         #region Abfahrtstafel Objekte
         private void btnAbfahrtstafel_Click(object sender, EventArgs e)
         {
             if (txtStation.Text != string.Empty)
             {
                 getGridAbfahrtstafel();
+                lstStation.Visible = false;
             }
             else
             {
@@ -326,6 +368,11 @@ namespace GUI
             }
         }
 
+        private void tabPage2_Click(object sender, EventArgs e)
+        {
+            webGoogleMaps.Visible = false;
+            panel2.Visible = true;
+        }
         private void txtStation_TextChanged(object sender, EventArgs e)
         {
             getStations(txtStation.Text, lstStation);
@@ -361,12 +408,14 @@ namespace GUI
 
         #endregion
 
+        #region Gui Ergonomie
         private void txtVon_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Down)
             {
                 lstVon.Focus();
-                
+                lstVon.SelectedIndex += 1;
+
             }
         }
 
@@ -375,68 +424,49 @@ namespace GUI
             if (e.KeyCode == Keys.Down)
             {
                 lstNach.Focus();
+                lstNach.SelectedIndex += 1;
             }
         }
 
-        #region Geowatcher
-        private void Form1_Load(object sender, EventArgs e)
+        private void txtStation_KeyDown(object sender, KeyEventArgs e)
         {
-            GeoCoordinateWatcher watcher = new GeoCoordinateWatcher();
-            watcher.PositionChanged += watcher_PositionChanged;
-            watcher.Start();
-        }
-
-        private void watcher_PositionChanged(object sender, GeoPositionChangedEventArgs<GeoCoordinate> e)
-        {
-            MessageBox.Show(String.Format("Lat: {0}, Long: {1}", e.Position.Location.Latitude,
-                e.Position.Location.Latitude));
-        }
-
-        private void getGridGeoWatcher()
-        {
-
-            GeoCoordinateWatcher watcher = new GeoCoordinateWatcher();
-            watcher.PositionChanged += watcher_PositionChanged;
-            watcher.Start();/*
-                Stations stations = transport.GetStations(Convert.ToString(watcher));
-                Station station = stations.StationList[0];
-                Create_GmapStation(Convert.ToString(station.Coordinate.XCoordinate).Replace(',', '.'), Convert.ToString(station.Coordinate.YCoordinate).Replace(',', '.'));
-                panel1.Visible = false;
-                panel2.Visible = false;
-                panel3.Visible = true;*/
-            DataTable dtt_routes = new DataTable();
-            dtt_routes.Columns.Add("Zeit");
-            dtt_routes.Columns.Add("Nach");
-            dtt_routes.Columns.Add("Linie");
-
-            //Definieren der Station für die Abfahrtstafel (Inhalt der Textbox wird übergeben)
-            Stations stations = transport.GetStations(Convert.ToString(watcher));
-            Station station = stations.StationList[0];
-            StationBoardRoot departures = transport.GetStationBoard(Convert.ToString(station.Coordinate.XCoordinate), Convert.ToString(station.Coordinate.YCoordinate)); //Beispiel für station.name ist Luzern, Beispiel für station.Id = 8505000
-
-            foreach (StationBoard station_b in departures.Entries)
+            if (e.KeyCode == Keys.Down)
             {
-                dtt_routes.Rows.Add(getTime(station_b.Stop.Departure.ToString()), station_b.To, (station_b.Category + " " + station_b.Number)); //Jede Linie die gefunden wird, wird hier durchgegangen
+                lstStation.Focus();
+                lstStation.SelectedIndex += 1;
             }
-
-            dgvAbfahrtstafel.DataSource = dtt_routes;
-
-
-
-
-
         }
-
-
-
-        private void btnNavGooglemaps_Click(object sender, EventArgs e)
+        private void btnback_Click(object sender, EventArgs e)
         {
-            getGridGeoWatcher();
+            panel1.Visible = true;
+            webGoogleMaps.Visible = false;
         }
 
+        private void btnExit_Click(object sender, EventArgs e)
+        {
+            this.Close();
+        }
 
+        private void btnMapReset_Click(object sender, EventArgs e)
+        {
+           googlMapsDefaultMap();
+        }
         #endregion
 
+        private void Form1_Load(object sender, EventArgs e)
+        {
+        
+        }
 
+        private void tabPage3_Click(object sender, EventArgs e)
+        {
+           
+        }
+
+        private void btnNear_Click(object sender, EventArgs e)
+        {
+            googleMapsStationsNearUrl();
+            GUI.SelectedIndex = 2;
+        }
     }
 }
