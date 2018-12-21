@@ -427,7 +427,6 @@
             this.tabPage3.TabIndex = 2;
             this.tabPage3.Text = "Google Maps";
             this.tabPage3.UseVisualStyleBackColor = true;
-            this.tabPage3.Click += new System.EventHandler(this.tabPage3_Click);
             // 
             // btnMapReset
             // 
@@ -459,7 +458,6 @@
             this.Name = "Form1";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "SBB Fahrplan";
-            this.Load += new System.EventHandler(this.Form1_Load);
             this.panel2.ResumeLayout(false);
             this.panel2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvAbfahrtstafel)).EndInit();

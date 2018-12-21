@@ -140,7 +140,6 @@ namespace GUI
 
         #endregion
 
-
         #region GoogleMaps
 
         
@@ -287,8 +286,6 @@ namespace GUI
 
         #endregion
 
-
-
         #region Fahrplan Objekte 
         //TextBox Von
         private void txtVon_TextChanged(object sender, EventArgs e)
@@ -379,17 +376,13 @@ namespace GUI
             }
         }
 
-        private void tabPage2_Click(object sender, EventArgs e)
-        {
-            webGoogleMaps.Visible = false;
-            panel2.Visible = true;
-        }
+      //TextBox Station
         private void txtStation_TextChanged(object sender, EventArgs e)
         {
             getStations(txtStation.Text, lstStation);
             
         }
-
+        //ListBox
         private void lstStation_MouseDoubleClick(object sender, MouseEventArgs e)
         {
             txtStation.Text = lstStation.SelectedItem.ToString();
@@ -465,16 +458,6 @@ namespace GUI
         }
         #endregion
 
-        private void Form1_Load(object sender, EventArgs e)
-        {
-        
-        }
-
-        private void tabPage3_Click(object sender, EventArgs e)
-        {
-           
-        }
-
-       
+      
     }
 }
