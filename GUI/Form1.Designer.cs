@@ -34,11 +34,15 @@
             this.btnAbfahrtstafel = new System.Windows.Forms.Button();
             this.txtStation = new System.Windows.Forms.TextBox();
             this.label6 = new System.Windows.Forms.Label();
+            this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.label5 = new System.Windows.Forms.Label();
             this.btnExit = new System.Windows.Forms.Button();
             this.GUI = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.label7 = new System.Windows.Forms.Label();
+            this.btnNear = new System.Windows.Forms.Button();
+            this.pbSwitch = new System.Windows.Forms.PictureBox();
             this.lstNach = new System.Windows.Forms.ListBox();
             this.lstVon = new System.Windows.Forms.ListBox();
             this.txtNach = new System.Windows.Forms.TextBox();
@@ -57,21 +61,18 @@
             this.btnback = new System.Windows.Forms.Button();
             this.tabPage2 = new System.Windows.Forms.TabPage();
             this.tabPage3 = new System.Windows.Forms.TabPage();
-            this.webGoogleMaps = new System.Windows.Forms.WebBrowser();
             this.btnMapReset = new System.Windows.Forms.Button();
-            this.btnNear = new System.Windows.Forms.Button();
-            this.pbSwitch = new System.Windows.Forms.PictureBox();
-            this.pictureBox1 = new System.Windows.Forms.PictureBox();
+            this.webGoogleMaps = new System.Windows.Forms.WebBrowser();
             this.panel2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvAbfahrtstafel)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.GUI.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.panel1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pbSwitch)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgvAnzeige)).BeginInit();
             this.tabPage2.SuspendLayout();
             this.tabPage3.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pbSwitch)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
             // 
             // panel2
@@ -94,7 +95,7 @@
             this.lstStation.Location = new System.Drawing.Point(40, 133);
             this.lstStation.Name = "lstStation";
             this.lstStation.Size = new System.Drawing.Size(178, 95);
-            this.lstStation.TabIndex = 4;
+            this.lstStation.TabIndex = 2;
             this.lstStation.Visible = false;
             this.lstStation.KeyDown += new System.Windows.Forms.KeyEventHandler(this.lstStation_KeyDown);
             this.lstStation.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.lstStation_MouseDoubleClick);
@@ -112,7 +113,7 @@
             this.btnAbfahrtstafel.Location = new System.Drawing.Point(245, 112);
             this.btnAbfahrtstafel.Name = "btnAbfahrtstafel";
             this.btnAbfahrtstafel.Size = new System.Drawing.Size(147, 23);
-            this.btnAbfahrtstafel.TabIndex = 5;
+            this.btnAbfahrtstafel.TabIndex = 3;
             this.btnAbfahrtstafel.Text = "Abfahrtstafel erstellen";
             this.btnAbfahrtstafel.UseVisualStyleBackColor = true;
             this.btnAbfahrtstafel.Click += new System.EventHandler(this.btnAbfahrtstafel_Click);
@@ -122,7 +123,7 @@
             this.txtStation.Location = new System.Drawing.Point(40, 114);
             this.txtStation.Name = "txtStation";
             this.txtStation.Size = new System.Drawing.Size(178, 20);
-            this.txtStation.TabIndex = 3;
+            this.txtStation.TabIndex = 1;
             this.txtStation.TextChanged += new System.EventHandler(this.txtStation_TextChanged);
             this.txtStation.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtStation_KeyDown);
             // 
@@ -134,6 +135,16 @@
             this.label6.Size = new System.Drawing.Size(40, 13);
             this.label6.TabIndex = 2;
             this.label6.Text = "Station";
+            // 
+            // pictureBox1
+            // 
+            this.pictureBox1.BackColor = System.Drawing.SystemColors.ButtonFace;
+            this.pictureBox1.Image = global::GUI.Properties.Resources.icons3;
+            this.pictureBox1.Location = new System.Drawing.Point(281, 19);
+            this.pictureBox1.Name = "pictureBox1";
+            this.pictureBox1.Size = new System.Drawing.Size(111, 61);
+            this.pictureBox1.TabIndex = 1;
+            this.pictureBox1.TabStop = false;
             // 
             // label5
             // 
@@ -182,6 +193,7 @@
             // 
             // panel1
             // 
+            this.panel1.Controls.Add(this.label7);
             this.panel1.Controls.Add(this.btnNear);
             this.panel1.Controls.Add(this.btnExit);
             this.panel1.Controls.Add(this.pbSwitch);
@@ -204,6 +216,35 @@
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(687, 475);
             this.panel1.TabIndex = 7;
+            // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Location = new System.Drawing.Point(17, 397);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(35, 13);
+            this.label7.TabIndex = 50;
+            this.label7.Text = "Email:";
+            // 
+            // btnNear
+            // 
+            this.btnNear.Location = new System.Drawing.Point(403, 123);
+            this.btnNear.Name = "btnNear";
+            this.btnNear.Size = new System.Drawing.Size(253, 23);
+            this.btnNear.TabIndex = 49;
+            this.btnNear.Text = "Stationen in der Nähe";
+            this.btnNear.UseVisualStyleBackColor = true;
+            this.btnNear.Click += new System.EventHandler(this.btnNear_Click);
+            // 
+            // pbSwitch
+            // 
+            this.pbSwitch.Image = global::GUI.Properties.Resources.switch1;
+            this.pbSwitch.Location = new System.Drawing.Point(173, 42);
+            this.pbSwitch.Name = "pbSwitch";
+            this.pbSwitch.Size = new System.Drawing.Size(57, 46);
+            this.pbSwitch.TabIndex = 48;
+            this.pbSwitch.TabStop = false;
+            this.pbSwitch.Click += new System.EventHandler(this.pbSwitch_Click);
             // 
             // lstNach
             // 
@@ -247,14 +288,14 @@
             // 
             // txtEmail
             // 
-            this.txtEmail.Location = new System.Drawing.Point(173, 388);
+            this.txtEmail.Location = new System.Drawing.Point(58, 394);
             this.txtEmail.Name = "txtEmail";
             this.txtEmail.Size = new System.Drawing.Size(161, 20);
             this.txtEmail.TabIndex = 13;
             // 
             // btnEmail
             // 
-            this.btnEmail.Location = new System.Drawing.Point(20, 385);
+            this.btnEmail.Location = new System.Drawing.Point(225, 392);
             this.btnEmail.Name = "btnEmail";
             this.btnEmail.Size = new System.Drawing.Size(143, 23);
             this.btnEmail.TabIndex = 12;
@@ -374,7 +415,6 @@
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "Abfahrtstafel";
             this.tabPage2.UseVisualStyleBackColor = true;
-            this.tabPage2.Click += new System.EventHandler(this.tabPage2_Click);
             // 
             // tabPage3
             // 
@@ -389,16 +429,6 @@
             this.tabPage3.UseVisualStyleBackColor = true;
             this.tabPage3.Click += new System.EventHandler(this.tabPage3_Click);
             // 
-            // webGoogleMaps
-            // 
-            this.webGoogleMaps.Location = new System.Drawing.Point(3, 3);
-            this.webGoogleMaps.MinimumSize = new System.Drawing.Size(20, 20);
-            this.webGoogleMaps.Name = "webGoogleMaps";
-            this.webGoogleMaps.ScriptErrorsSuppressed = true;
-            this.webGoogleMaps.Size = new System.Drawing.Size(673, 454);
-            this.webGoogleMaps.TabIndex = 7;
-            this.webGoogleMaps.Url = new System.Uri("https://www.google.com/maps/", System.UriKind.Absolute);
-            // 
             // btnMapReset
             // 
             this.btnMapReset.Location = new System.Drawing.Point(575, 0);
@@ -409,35 +439,15 @@
             this.btnMapReset.UseVisualStyleBackColor = true;
             this.btnMapReset.Click += new System.EventHandler(this.btnMapReset_Click);
             // 
-            // btnNear
+            // webGoogleMaps
             // 
-            this.btnNear.Location = new System.Drawing.Point(403, 123);
-            this.btnNear.Name = "btnNear";
-            this.btnNear.Size = new System.Drawing.Size(253, 23);
-            this.btnNear.TabIndex = 49;
-            this.btnNear.Text = "Stationen in der Nähe";
-            this.btnNear.UseVisualStyleBackColor = true;
-            this.btnNear.Click += new System.EventHandler(this.btnNear_Click);
-            // 
-            // pbSwitch
-            // 
-            this.pbSwitch.Image = global::GUI.Properties.Resources.switch1;
-            this.pbSwitch.Location = new System.Drawing.Point(173, 42);
-            this.pbSwitch.Name = "pbSwitch";
-            this.pbSwitch.Size = new System.Drawing.Size(57, 46);
-            this.pbSwitch.TabIndex = 48;
-            this.pbSwitch.TabStop = false;
-            this.pbSwitch.Click += new System.EventHandler(this.pbSwitch_Click);
-            // 
-            // pictureBox1
-            // 
-            this.pictureBox1.BackColor = System.Drawing.SystemColors.ButtonFace;
-            this.pictureBox1.Image = global::GUI.Properties.Resources.icons3;
-            this.pictureBox1.Location = new System.Drawing.Point(281, 19);
-            this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(111, 61);
-            this.pictureBox1.TabIndex = 1;
-            this.pictureBox1.TabStop = false;
+            this.webGoogleMaps.Location = new System.Drawing.Point(3, 3);
+            this.webGoogleMaps.MinimumSize = new System.Drawing.Size(20, 20);
+            this.webGoogleMaps.Name = "webGoogleMaps";
+            this.webGoogleMaps.ScriptErrorsSuppressed = true;
+            this.webGoogleMaps.Size = new System.Drawing.Size(673, 454);
+            this.webGoogleMaps.TabIndex = 7;
+            this.webGoogleMaps.Url = new System.Uri("https://www.google.com/maps/", System.UriKind.Absolute);
             // 
             // Form1
             // 
@@ -448,20 +458,20 @@
             this.MaximizeBox = false;
             this.Name = "Form1";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "Form1";
+            this.Text = "SBB Fahrplan";
             this.Load += new System.EventHandler(this.Form1_Load);
             this.panel2.ResumeLayout(false);
             this.panel2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvAbfahrtstafel)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.GUI.ResumeLayout(false);
             this.tabPage1.ResumeLayout(false);
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pbSwitch)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgvAnzeige)).EndInit();
             this.tabPage2.ResumeLayout(false);
             this.tabPage3.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.pbSwitch)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -502,6 +512,7 @@
         private System.Windows.Forms.WebBrowser webGoogleMaps;
         private System.Windows.Forms.Button btnMapReset;
         private System.Windows.Forms.Button btnNear;
+        private System.Windows.Forms.Label label7;
     }
 }
 

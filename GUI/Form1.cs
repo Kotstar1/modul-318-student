@@ -64,7 +64,7 @@ namespace GUI
             }
             return strTable.ToString();
         }
-
+        //Button Fahrplan per Email senden
         private void btnEmail_Click(object sender, EventArgs e)
         {
             if (txtEmail.Text == "")
@@ -77,11 +77,11 @@ namespace GUI
             {
                 try
                 {
-                    MailMessage mail = new MailMessage();
+                    MailMessage mail = new MailMessage();   //Email wird erstellt
                     mail.From = new MailAddress("modul318.henry.walker@gmail.com");
                     mail.To.Add(new MailAddress(Convert.ToString(this.txtEmail)));
                     mail.Subject = "Fahrplan";
-                    mail.Body = "Hallo, hier ein Fahrplan, den ich mit dir teilen wollte. ";
+                    mail.Body = "Guten tag, hier ein Fahrplan, welcher ich mit dir teilen wollte!";
                     mail.Body += "<b>" + getTableFromDataGrid() + "</b>";
                     mail.IsBodyHtml = true;
                     SmtpClient SmtpServer = new SmtpClient();
@@ -144,25 +144,33 @@ namespace GUI
         #region GoogleMaps
 
         
-
-        
         private void GoogleMapsShowStation(string x, string y)
         {
             string url = "https://www.google.ch/maps/place/" + x + "," + y; //Die Kordinaten  von der Station werden in die Google Map Suchleiste geschrieben
             webGoogleMaps.Navigate(url);
         }
 
+        //Die Url um die Nächsten Stationen anzuzeigen 
         private void googleMapsStationsNearUrl()
         {
            string url = "https://www.google.com/maps/search/transit+stop+near/";
             webGoogleMaps.Navigate(url);
         }
+        //Button Stationen in der Nähe
+        private void btnNear_Click(object sender, EventArgs e)
+        {
+            googleMapsStationsNearUrl();
+            GUI.SelectedIndex = 2;
+        }
 
+        //Der WebBrowser wird auf Google Maps gesetzt
         private void googlMapsDefaultMap()
         {
             string url = "https://www.google.com/maps/";
             webGoogleMaps.Navigate(url);
         }
+
+        //Button Auf Google Maps ansehen 
         private void btnGooglemaps_Click(object sender, EventArgs e)
         {
 
@@ -187,7 +195,7 @@ namespace GUI
         #endregion
 
         #region getGrid Abfahrtstafel
-        private void getGridAbfahrtstafel()
+        private void getGridAbfahrtstafel()     //Grid für die Abfahrtstafel
         {
             try
             {
@@ -210,7 +218,7 @@ namespace GUI
             }
             catch
             {
-                MessageBox.Show("Geben sie einen Gültigen Wert ein!");
+                MessageBox.Show("Geben sie einen Gültigen Wert ein!");    //Fehlermeldung wenn keine Werte in den TextBoxen sind
             }
 
         }
@@ -219,7 +227,7 @@ namespace GUI
         #endregion
 
         #region getDate/getTime/getStations
-        private string getDate(string date1)
+        private string getDate(string date1)         //Zeit wird geholt
         {
             string date2 = date1.Remove(10);
             DateTime date3 = Convert.ToDateTime(date2);
@@ -232,7 +240,7 @@ namespace GUI
             time2 = time2.Remove(5);
             return time2;
         }
-        private void getStations(string text, ListBox listBox)
+        private void getStations(string text, ListBox listBox)  //Stationen werden geholt
         {
             try
             {
@@ -247,7 +255,9 @@ namespace GUI
                         listBox.Visible = true;
                         listBox.BringToFront();
                     }
+                    
                 }
+                
             }
             catch
             {
@@ -355,6 +365,7 @@ namespace GUI
         #endregion
 
         #region Abfahrtstafel Objekte
+        //Button Abfahrtstafel erstellen
         private void btnAbfahrtstafel_Click(object sender, EventArgs e)
         {
             if (txtStation.Text != string.Empty)
@@ -376,6 +387,7 @@ namespace GUI
         private void txtStation_TextChanged(object sender, EventArgs e)
         {
             getStations(txtStation.Text, lstStation);
+            
         }
 
         private void lstStation_MouseDoubleClick(object sender, MouseEventArgs e)
@@ -463,10 +475,6 @@ namespace GUI
            
         }
 
-        private void btnNear_Click(object sender, EventArgs e)
-        {
-            googleMapsStationsNearUrl();
-            GUI.SelectedIndex = 2;
-        }
+       
     }
 }
